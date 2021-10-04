@@ -10,7 +10,7 @@ class AlmacenEventosJSON extends AlmacenEventos
             echo "ERROR: No se encuentra el archivo de eventos";
         }
 
-        $this->suscriptores = json_decode(self::ARCHIVO_DE_EVENTOS, true);
+        $this->suscriptores = json_decode(file_get_contents(self::ARCHIVO_DE_EVENTOS), true);
         $this->eventos = array_keys($this->suscriptores);
     }
 }

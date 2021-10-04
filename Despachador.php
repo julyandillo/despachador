@@ -1,5 +1,7 @@
 <?php
 
+include_once 'Almacen/FactoryAlmacen.php';
+
 class Despachador
 {
     const SUSCRIPTORES = 'suscriptores';
@@ -10,7 +12,7 @@ class Despachador
 
     private function __construct()
     {
-        $this->almacenEventos = new AlmacenEventosJSON();
+        $this->almacenEventos = FactoryAlmacen::getAlmacen();
     }
 
     public static function lanzaEvento(string $evento, array $parametros)

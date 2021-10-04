@@ -1,4 +1,4 @@
 {
   "PRODUCTO_CAMBIO_PRECIO": ["ActualizaProductoConnectif"],
-  "PRODUCTO_DESCATALOGADO": ["ActualizaProductoConnectif"]
+  "PRODUCTO_DESCATALOGADO": ["ActualizaProductoConnectif", "DescatalogaProductoAqua"]
 }
