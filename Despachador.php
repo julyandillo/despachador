@@ -27,11 +27,11 @@ class Despachador
         }
 
         foreach (self::$instance->almacenEventos->getArraySuscriptoresDelEvento($evento) as $observador) {
-            if (!($instanciaDelObservador = self::$instance->creaInstanciaDelSuscriptor($observador, $evento))) {
+            if (!($creaInstanciaDelSuscriptor = self::$instance->creaInstanciaDelSuscriptor($observador, $evento))) {
                 continue;
             }
 
-            $instanciaDelObservador->notifica($parametros);
+            $creaInstanciaDelSuscriptor->notifica($parametros);
         }
     }
 
@@ -40,6 +40,7 @@ class Despachador
         $tipoEvento = explode('_', $evento)[0];
 
         if (!file_exists(self::SUSCRIPTORES . '/' . Evento::obtenerTipoEvento($evento) . '/' . $nombreClase . '.php')) {
+            echo "ERROR: No se encuentra el fichero del susciptor en la ruta adecuada<br />";
             return null;
         }
 
@@ -49,12 +50,12 @@ class Despachador
             $reflector = new ReflectionClass($nombreClase);
 
         } catch (ReflectionException $ex) {
-            echo "ERROR: No se ha podido instanciar el suscriptor\n" . $ex->getMessage();
+            echo "ERROR: No se ha podido instanciar el suscriptor<br />" . $ex->getMessage();
             return null;
         }
 
         if (!$reflector->implementsInterface('Notificable')) {
-            echo "ERROR: El suscriptor '{$nombreClase}' no implementa la interfaz notificable\n";
+            echo "ERROR: El suscriptor '{$nombreClase}' no implementa la interfaz notificable<br />";
             return null;
         }
 
