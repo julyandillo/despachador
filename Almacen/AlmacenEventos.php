@@ -43,8 +43,8 @@ abstract class AlmacenEventos
     {
         $eventos = [];
         foreach ($this->eventosDisponibles as $evento) {
-            $tipo = Evento::getTipoEvento($evento);
-            $eventos[$tipo][] = Evento::getNombreEvento($evento);
+            list($tipo, $nombre) = explode(Evento::SEPARADOR, $evento);
+            $eventos[$tipo][] = $nombre;
         }
 
         return $eventos;

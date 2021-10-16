@@ -1,6 +1,8 @@
 <?php
 
+include_once 'Evento.php';
+
 interface Notificable
 {
-    public function notifica(string $evento, array $parametros);
+    public function notifica(Evento $evento);
 }

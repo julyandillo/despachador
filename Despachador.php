@@ -15,23 +15,28 @@ class Despachador
         $this->almacenEventos = FactoryAlmacen::getAlmacen();
     }
 
-    public static function lanzaEvento(string $evento, array $parametros)
+    public static function lanzaEvento(string $eventoParalanzar, array $parametros)
     {
         if (!self::$instancia) {
             self::$instancia = new self();
         }
 
-        if (!self::$instancia->almacenEventos->eventoDisponible($evento)) {
-            echo "ERROR: El evento '{$evento}' no es válido o no está entre los disponibles";
+        if (!self::$instancia->almacenEventos->eventoDisponible($eventoParalanzar)) {
+            echo "ERROR: El evento '{$eventoParalanzar}' no es válido o no está entre los disponibles";
             return null;
         }
 
-        foreach (self::$instancia->almacenEventos->getArraySuscriptoresDelEvento($evento) as $observador) {
-            if (!($creaInstanciaDelSuscriptor = self::$instancia->creaInstanciaDelSuscriptor($observador, $evento))) {
+        $evento = new Evento($eventoParalanzar);
+        $evento->setParametros($parametros);
+        // obtiene el archivo desde el cual se lanza el evento
+        $evento->setLlamador(debug_backtrace()[0]['file']);
+
+        foreach (self::$instancia->almacenEventos->getArraySuscriptoresDelEvento($eventoParalanzar) as $suscriptor) {
+            if (!($creaInstanciaDelSuscriptor = self::$instancia->creaInstanciaDelSuscriptor($suscriptor, $evento->getTipo()))) {
                 continue;
             }
 
-            $creaInstanciaDelSuscriptor->notifica($evento, $parametros);
+            $creaInstanciaDelSuscriptor->notifica($evento);
         }
     }
 
@@ -44,17 +49,17 @@ class Despachador
         return self::$instancia;
     }
 
-    public function creaInstanciaDelSuscriptor(string $nombreClase, string $evento): ?Notificable
+    public function creaInstanciaDelSuscriptor(string $nombreClaseSuscriptor, string $tipoEvento): ?Notificable
     {
-        if (!file_exists(self::PATH_SUSCRIPTORES . '/' . Evento::getTipoEvento($evento) . '/' . $nombreClase . '.php')) {
+        if (!file_exists(self::PATH_SUSCRIPTORES . '/' . $tipoEvento . '/' . $nombreClaseSuscriptor . '.php')) {
             echo "ERROR: No se encuentra la clase del suscriptor en la ruta adecuada<br />";
             return null;
         }
 
-        include_once self::PATH_SUSCRIPTORES . '/' . Evento::getTipoEvento($evento) . '/' . $nombreClase . '.php';
+        include_once self::PATH_SUSCRIPTORES . '/' . $tipoEvento . '/' . $nombreClaseSuscriptor . '.php';
 
         try {
-            $reflector = new ReflectionClass($nombreClase);
+            $reflector = new ReflectionClass($nombreClaseSuscriptor);
 
         } catch (ReflectionException $ex) {
             echo "ERROR: No se ha podido instanciar el suscriptor<br />" . $ex->getMessage();
@@ -62,7 +67,7 @@ class Despachador
         }
 
         if (!$reflector->implementsInterface('Notificable')) {
-            echo "ERROR: El suscriptor '{$nombreClase}' no implementa la interfaz notificable<br />";
+            echo "ERROR: El suscriptor '{$nombreClaseSuscriptor}' no implementa la interfaz notificable<br />";
             return null;
         }
 
