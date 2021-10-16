@@ -31,7 +31,7 @@ class Despachador
                 continue;
             }
 
-            $creaInstanciaDelSuscriptor->notifica($parametros);
+            $creaInstanciaDelSuscriptor->notifica($evento, $parametros);
         }
     }
 

@@ -4,8 +4,9 @@ include_once __DIR__ . '/../../Notificable.php';
 
 class ActualizaProductoConnectif implements Notificable
 {
-    public function notifica(array $parametros)
+    public function notifica(string $evento, array $parametros)
     {
-        print_r($parametros);
+        echo "Clase: " . self::class . ", evento capturado, {$evento}";
+        echo "<br />--------------<br />";
     }
 }

@@ -2,5 +2,5 @@
 
 interface Notificable
 {
-    public function notifica(array $parametros);
+    public function notifica(string $evento, array $parametros);
 }
