@@ -27,9 +27,11 @@ class Despachador
         }
 
         $evento = new Evento($eventoParalanzar);
-        $evento->setParametros($parametros);
-        // obtiene el archivo desde el cual se lanza el evento
-        $evento->setLlamador(debug_backtrace()[0]['file']);
+        $evento
+            ->setParametros($parametros)
+            // obtiene el archivo desde el cual se lanza el evento
+            ->setLlamador(debug_backtrace()[0]['file'])
+            ->setLinea(debug_backtrace()[0]['line']);
 
         foreach (self::$instancia->almacenEventos->getArraySuscriptoresDelEvento($eventoParalanzar) as $suscriptor) {
             if (!($creaInstanciaDelSuscriptor = self::$instancia->creaInstanciaDelSuscriptor($suscriptor, $evento->getTipo()))) {

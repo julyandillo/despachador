@@ -10,6 +10,8 @@ class Evento
 
     private string $llamador;
 
+    private int $linea;
+
     private string $timestamp;
 
     private array $parametros;
@@ -19,6 +21,7 @@ class Evento
         list($this->tipo, $this->nombre) = explode(self::SEPARADOR, $evento);
         $this->parametros = [];
         $this->llamador = '';
+        $this->linea = 0;
         $this->timestamp = date('d-m-Y H:i:s');
     }
 
@@ -88,6 +91,17 @@ class Evento
         }
 
         return $this->parametros[$key];
+    }
+
+    public function getLinea(): int
+    {
+        return $this->linea;
+    }
+
+    public function setLinea(int $linea): self
+    {
+        $this->linea = $linea;
+        return $this;
     }
 
 }
