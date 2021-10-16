@@ -4,9 +4,9 @@ include_once 'Almacen/FactoryAlmacen.php';
 
 class Despachador
 {
-    const SUSCRIPTORES = 'suscriptores';
+    const PATH_SUSCRIPTORES = 'suscriptores';
 
-    private static ?Despachador $instance = null;
+    private static ?Despachador $instancia = null;
 
     public AlmacenEventos $almacenEventos;
 
@@ -17,17 +17,17 @@ class Despachador
 
     public static function lanzaEvento(string $evento, array $parametros)
     {
-        if (self::$instance == null) {
-            self::$instance = new self();
+        if (!self::$instancia) {
+            self::$instancia = new self();
         }
 
-        if (!self::$instance->almacenEventos->existeEvento($evento)) {
+        if (!self::$instancia->almacenEventos->eventoDisponible($evento)) {
             echo "ERROR: El evento '{$evento}' no es válido o no está entre los disponibles";
             return null;
         }
 
-        foreach (self::$instance->almacenEventos->getArraySuscriptoresDelEvento($evento) as $observador) {
-            if (!($creaInstanciaDelSuscriptor = self::$instance->creaInstanciaDelSuscriptor($observador, $evento))) {
+        foreach (self::$instancia->almacenEventos->getArraySuscriptoresDelEvento($evento) as $observador) {
+            if (!($creaInstanciaDelSuscriptor = self::$instancia->creaInstanciaDelSuscriptor($observador, $evento))) {
                 continue;
             }
 
@@ -35,16 +35,23 @@ class Despachador
         }
     }
 
+    public static function getInstancia(): self
+    {
+        if (!self::$instancia) {
+            self::$instancia = new self();
+        }
+
+        return self::$instancia;
+    }
+
     public function creaInstanciaDelSuscriptor(string $nombreClase, string $evento): ?Notificable
     {
-        $tipoEvento = explode('_', $evento)[0];
-
-        if (!file_exists(self::SUSCRIPTORES . '/' . Evento::obtenerTipoEvento($evento) . '/' . $nombreClase . '.php')) {
-            echo "ERROR: No se encuentra el fichero del susciptor en la ruta adecuada<br />";
+        if (!file_exists(self::PATH_SUSCRIPTORES . '/' . Evento::getTipoEvento($evento) . '/' . $nombreClase . '.php')) {
+            echo "ERROR: No se encuentra la clase del suscriptor en la ruta adecuada<br />";
             return null;
         }
 
-        include_once self::SUSCRIPTORES . '/' . Evento::obtenerTipoEvento($evento) . '/' . $nombreClase . '.php';
+        include_once self::PATH_SUSCRIPTORES . '/' . Evento::getTipoEvento($evento) . '/' . $nombreClase . '.php';
 
         try {
             $reflector = new ReflectionClass($nombreClase);
@@ -60,6 +67,11 @@ class Despachador
         }
 
         return $reflector->newInstance();
+    }
+
+    public function getEventosDisponibles(): array
+    {
+        return $this->almacenEventos->getEventosDisponibles();
     }
 
 }

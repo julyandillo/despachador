@@ -8,4 +8,5 @@ include_once 'Despachador.php';
 
 $despachador = Despachador::getInstancia();
 
-$despachador->lanzaEvento('producto.cambia_precio', ['sku' => '123-1234']);
+print_r($despachador->getEventosDisponibles());
+$despachador->lanzaEvento('producto.descatalogado', ['sku' => '123-1234']);
