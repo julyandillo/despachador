@@ -4,12 +4,12 @@ class Evento
 {
     public static function esValido(string $nombreEvento): bool
     {
-        return strpos($nombreEvento, '_') !== false;
+        return strpos($nombreEvento, '.') !== false;
     }
 
     public static function obtenerTipoEvento($nombreEvento): string
     {
-        return strtolower(explode('_', $nombreEvento)[0]);
+        return strtolower(explode('.', $nombreEvento)[0]);
     }
 
 }

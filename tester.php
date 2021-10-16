@@ -6,5 +6,4 @@ error_reporting(E_ALL);
 
 include_once 'Despachador.php';
 
-
-Despachador::lanzaEvento('PRODUCTO_DESCATALOGADO', ['sku' => '123-1234']);
+Despachador::lanzaEvento('producto.cambia_precio', ['sku' => '123-1234']);
