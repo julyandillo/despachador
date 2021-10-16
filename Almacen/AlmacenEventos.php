@@ -41,7 +41,13 @@ abstract class AlmacenEventos
 
     public function getEventosDisponibles(): array
     {
-        return $this->eventosDisponibles;
+        $eventos = [];
+        foreach ($this->eventosDisponibles as $evento) {
+            $tipo = Evento::getTipoEvento($evento);
+            $eventos[$tipo][] = Evento::getNombreEvento($evento);
+        }
+
+        return $eventos;
     }
 
 }
