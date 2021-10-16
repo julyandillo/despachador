@@ -1,10 +1,22 @@
 {
   "producto.cambia_precio": {
-    "activado": false,
+    "activado": true,
     "suscriptores": ["ActualizaProductoConnectif"]
   },
   "producto.descatalogado": {
     "activado": true,
     "suscriptores": ["ActualizaProductoConnectif", "DescatalogaProductoAqua"]
+  },
+  "producto.nuevo": {
+    "activado": true,
+    "suscriptores": []
+  },
+  "pedido.nuevo": {
+    "activado": true,
+    "suscriptores": []
+  },
+  "pedido.preparado": {
+    "activado": true,
+    "suscriptores": []
   }
 }
