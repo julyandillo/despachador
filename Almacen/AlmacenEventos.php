@@ -6,6 +6,8 @@ abstract class AlmacenEventos
 {
     protected array $eventos = [];
 
+    protected array $eventosDisponibles = [];
+
     protected array $suscriptores = [];
 
     public function getTodosSuscriptores(): array
@@ -23,13 +25,23 @@ abstract class AlmacenEventos
         return $this->eventos;
     }
 
-    public function existeEvento(string $evento): bool
+    public function eventoDisponible(string $evento): bool
     {
-        if (Evento::esValido($evento)) {
-            return in_array($evento, $this->eventos);
+        if (!Evento::esValido($evento)) {
+            return false;
         }
 
-        return false;
+        return in_array($evento, $this->eventosDisponibles);
+    }
+
+    public function getEventos(): array
+    {
+        return $this->eventos;
+    }
+
+    public function getEventosDisponibles(): array
+    {
+        return $this->eventosDisponibles;
     }
 
 }

@@ -6,4 +6,6 @@ error_reporting(E_ALL);
 
 include_once 'Despachador.php';
 
-Despachador::lanzaEvento('producto.cambia_precio', ['sku' => '123-1234']);
+$despachador = Despachador::getInstancia();
+
+$despachador->lanzaEvento('producto.cambia_precio', ['sku' => '123-1234']);
