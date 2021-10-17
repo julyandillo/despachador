@@ -31,6 +31,14 @@ class Despachador
             return;
         }
 
+        $diferencias = array_diff($evento->getParametrosObligatorios(), array_keys($parametros));
+        if (!empty($diferencias)) {
+            echo "ERROR: para que el evento sea lanzado se deben pasar los siguientes parametros: <br />" .
+                implode(',', $diferencias);
+
+            return;
+        }
+
         $evento
             ->setParametros($parametros)
             // obtiene el archivo desde el cual se lanza el evento
