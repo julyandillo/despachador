@@ -35,7 +35,6 @@ class Despachador
         if (!empty($diferencias)) {
             echo "ERROR: para que el evento sea lanzado se deben pasar los siguientes parametros: <br />" .
                 implode(',', $diferencias);
-
             return;
         }
 
@@ -45,12 +44,12 @@ class Despachador
             ->setLanzador(debug_backtrace()[0]['file'])
             ->setLinea(debug_backtrace()[0]['line']);
 
-        foreach ($evento->getSuscriptores() as $suscriptor) {
-            if (!($instanciaDelSuscriptor = Suscriptor::getInstanciaPorNombre($suscriptor, $evento->getTipo()))) {
+        foreach ($evento->getSuscriptores() as $nombreSuscriptor) {
+            if (!($suscriptor = Suscriptor::getInstanciaPorNombre($nombreSuscriptor, $evento->getTipo()))) {
                 continue;
             }
 
-            $instanciaDelSuscriptor->notificaEvento($evento);
+            $suscriptor->notificaEvento($evento);
         }
     }
 
