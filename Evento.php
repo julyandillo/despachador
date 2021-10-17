@@ -8,7 +8,7 @@ class Evento
 
     private string $nombre;
 
-    private string $llamador;
+    private string $lanzador;
 
     private int $linea;
 
@@ -20,7 +20,7 @@ class Evento
     {
         list($this->tipo, $this->nombre) = explode(self::SEPARADOR, $evento);
         $this->parametros = [];
-        $this->llamador = '';
+        $this->lanzador = '';
         $this->linea = 0;
         $this->timestamp = date('d-m-Y H:i:s');
     }
@@ -35,7 +35,7 @@ class Evento
         return strpos($evento, self::SEPARADOR) !== false;
     }
 
-    public function getTipo()
+    public function getTipo(): string
     {
         return $this->tipo;
     }
@@ -46,7 +46,7 @@ class Evento
         return $this;
     }
 
-    public function getNombre()
+    public function getNombre(): string
     {
         return $this->nombre;
     }
@@ -57,18 +57,18 @@ class Evento
         return $this;
     }
 
-    public function getLlamador(): string
+    public function getLanzador(): string
     {
-        return $this->llamador;
+        return $this->lanzador;
     }
 
-    public function setLlamador(string $llamador): self
+    public function setLanzador(string $lanzador): self
     {
-        $this->llamador = $llamador;
+        $this->lanzador = $lanzador;
         return $this;
     }
 
-    public function getTimestamp()
+    public function getTimestamp(): string
     {
         return $this->timestamp;
     }

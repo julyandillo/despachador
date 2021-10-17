@@ -30,15 +30,15 @@ class Despachador
         $evento
             ->setParametros($parametros)
             // obtiene el archivo desde el cual se lanza el evento
-            ->setLlamador(debug_backtrace()[0]['file'])
+            ->setLanzador(debug_backtrace()[0]['file'])
             ->setLinea(debug_backtrace()[0]['line']);
 
         foreach (self::$instancia->almacenEventos->getArraySuscriptoresDelEvento($eventoParalanzar) as $suscriptor) {
-            if (!($creaInstanciaDelSuscriptor = self::$instancia->creaInstanciaDelSuscriptor($suscriptor, $evento->getTipo()))) {
+            if (!($instanciaDelSuscriptor = self::$instancia->creaInstanciaDelSuscriptor($suscriptor, $evento->getTipo()))) {
                 continue;
             }
 
-            $creaInstanciaDelSuscriptor->notifica($evento);
+            $instanciaDelSuscriptor->notificaEvento($evento);
         }
     }
 
@@ -51,7 +51,7 @@ class Despachador
         return self::$instancia;
     }
 
-    public function creaInstanciaDelSuscriptor(string $nombreClaseSuscriptor, string $tipoEvento): ?Notificable
+    public function creaInstanciaDelSuscriptor(string $nombreClaseSuscriptor, string $tipoEvento): ?Suscriptor
     {
         if (!file_exists(self::PATH_SUSCRIPTORES . '/' . $tipoEvento . '/' . $nombreClaseSuscriptor . '.php')) {
             echo "ERROR: No se encuentra la clase del suscriptor en la ruta adecuada<br />";
@@ -68,8 +68,8 @@ class Despachador
             return null;
         }
 
-        if (!$reflector->implementsInterface('Notificable')) {
-            echo "ERROR: El suscriptor '{$nombreClaseSuscriptor}' no implementa la interfaz notificable<br />";
+        if (!$reflector->isSubclassOf('Suscriptor')) {
+            echo "ERROR: El suscriptor '{$nombreClaseSuscriptor}' no es una subclase de la clase Suscriptor<br />";
             return null;
         }
 

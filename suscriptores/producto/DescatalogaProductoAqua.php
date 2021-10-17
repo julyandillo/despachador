@@ -1,14 +1,13 @@
 <?php
 
-include_once __DIR__ . '/../../Notificable.php';
+include_once __DIR__ . '/../../Suscriptor.php';
 
-class DescatalogaProductoAqua implements Notificable
+final class DescatalogaProductoAqua extends Suscriptor
 {
+    protected string $php_self = self::class;
 
-    public function notifica(Evento $evento)
+    protected function lanzaEvento(Evento $evento)
     {
-        echo "Clase: " . self::class . ", evento capturado<br />";
-        var_dump($evento);
-        echo "<br />--------------<br />";
+        echo "<br />Código del evento en la clase " . self::class;
     }
 }

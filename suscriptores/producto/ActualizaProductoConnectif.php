@@ -1,14 +1,13 @@
 <?php
 
-include_once __DIR__ . '/../../Notificable.php';
+include_once __DIR__ . '/../../Suscriptor.php';
 
-class ActualizaProductoConnectif implements Notificable
+final class ActualizaProductoConnectif extends Suscriptor
 {
-    public function notifica(Evento $evento)
+    protected string $php_self = self::class;
+
+    protected function lanzaEvento(Evento $evento)
     {
-        echo "Clase: " . self::class . ", evento capturado, {$evento}<br />";
-        echo "Fecha y hora del evento: {$evento->getTimestamp()}<br />";
-        echo "Lanzado desde: {$evento->getLlamador()}, linea {$evento->getLinea()}<br />";
-        echo "Producto que se descataloga: {$evento->getParametro('sku')}<br />";
+        echo "<br />Código del evento en la clase " . self::class;
     }
 }
