@@ -1,11 +1,10 @@
 <?php
 
 include_once 'Almacen/FactoryAlmacen.php';
+include_once 'Suscriptor.php';
 
 class Despachador
 {
-    const PATH_SUSCRIPTORES = 'suscriptores';
-
     private static ?Despachador $instancia = null;
 
     public AlmacenEventos $almacenEventos;
@@ -34,7 +33,7 @@ class Despachador
             ->setLinea(debug_backtrace()[0]['line']);
 
         foreach (self::$instancia->almacenEventos->getArraySuscriptoresDelEvento($eventoParalanzar) as $suscriptor) {
-            if (!($instanciaDelSuscriptor = self::$instancia->creaInstanciaDelSuscriptor($suscriptor, $evento->getTipo()))) {
+            if (!($instanciaDelSuscriptor = Suscriptor::getInstanciaPorNombre($suscriptor, $evento->getTipo()))) {
                 continue;
             }
 
@@ -49,31 +48,6 @@ class Despachador
         }
 
         return self::$instancia;
-    }
-
-    public function creaInstanciaDelSuscriptor(string $nombreClaseSuscriptor, string $tipoEvento): ?Suscriptor
-    {
-        if (!file_exists(self::PATH_SUSCRIPTORES . '/' . $tipoEvento . '/' . $nombreClaseSuscriptor . '.php')) {
-            echo "ERROR: No se encuentra la clase del suscriptor en la ruta adecuada<br />";
-            return null;
-        }
-
-        include_once self::PATH_SUSCRIPTORES . '/' . $tipoEvento . '/' . $nombreClaseSuscriptor . '.php';
-
-        try {
-            $reflector = new ReflectionClass($nombreClaseSuscriptor);
-
-        } catch (ReflectionException $ex) {
-            echo "ERROR: No se ha podido instanciar el suscriptor<br />" . $ex->getMessage();
-            return null;
-        }
-
-        if (!$reflector->isSubclassOf('Suscriptor')) {
-            echo "ERROR: El suscriptor '{$nombreClaseSuscriptor}' no es una subclase de la clase Suscriptor<br />";
-            return null;
-        }
-
-        return $reflector->newInstance();
     }
 
     public function getEventosDisponibles(): array
