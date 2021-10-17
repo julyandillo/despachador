@@ -11,13 +11,17 @@ class AlmacenEventosJSON extends AlmacenEventos
         }
 
         $eventosAlmacenados = json_decode(file_get_contents(self::ARCHIVO_DE_EVENTOS), true);
-        foreach ($eventosAlmacenados as $evento => $valores) {
+        foreach ($eventosAlmacenados as $nombreEvento => $valores) {
+            $evento = new Evento($nombreEvento);
+            $evento
+                ->setSuscriptores($valores['suscriptores'])
+                ->setParametrosObligatorios($valores['parametrosObligatorios']);
+
             if ($valores['activado']) {
-                $this->eventosDisponibles[] = $evento;
-                $this->suscriptores[$evento] = $valores['suscriptores'];
+                $this->eventosDisponibles[$nombreEvento] = $evento;
             }
 
-            $this->eventos[] = $evento;
+            $this->eventos[$nombreEvento] = $evento;
         }
     }
 }

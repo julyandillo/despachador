@@ -1,22 +1,27 @@
 {
   "producto.cambia_precio": {
     "activado": true,
-    "suscriptores": ["ActualizaProductoConnectif"]
+    "suscriptores": ["ActualizaProductoConnectif"],
+    "parametrosObligatorios": ["sku", "precio", "vendedor"]
   },
   "producto.descatalogado": {
     "activado": true,
-    "suscriptores": ["ActualizaProductoConnectif", "DescatalogaProductoAqua"]
+    "suscriptores": ["ActualizaProductoConnectif", "DescatalogaProductoAqua"],
+    "parametrosObligatorios": ["sku"]
   },
   "producto.nuevo": {
     "activado": true,
-    "suscriptores": []
+    "suscriptores": [],
+    "parametrosObligatorios": ["sku"]
   },
   "pedido.nuevo": {
     "activado": true,
-    "suscriptores": []
+    "suscriptores": [],
+    "parametrosObligatorios": ["id_order"]
   },
   "pedido.preparado": {
     "activado": true,
-    "suscriptores": []
+    "suscriptores": [],
+    "parametrosObligatorios": ["id_order"]
   }
 }

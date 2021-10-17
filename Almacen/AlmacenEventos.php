@@ -8,30 +8,18 @@ abstract class AlmacenEventos
 
     protected array $eventosDisponibles = [];
 
-    protected array $suscriptores = [];
-
-    public function getTodosSuscriptores(): array
-    {
-        return $this->suscriptores;
-    }
-
-    public function getArraySuscriptoresDelEvento(string $evento): array
-    {
-        return $this->suscriptores[$evento];
-    }
-
     public function getArrayEventos(): array
     {
         return $this->eventos;
     }
 
-    public function eventoDisponible(string $evento): bool
+    public function getEvento(string $evento): ?Evento
     {
-        if (!Evento::esValido($evento)) {
-            return false;
+        if (!array_key_exists($evento, $this->eventosDisponibles)) {
+            return null;
         }
 
-        return in_array($evento, $this->eventosDisponibles);
+        return $this->eventosDisponibles[$evento];
     }
 
     public function getEventos(): array
@@ -43,8 +31,7 @@ abstract class AlmacenEventos
     {
         $eventos = [];
         foreach ($this->eventosDisponibles as $evento) {
-            list($tipo, $nombre) = explode(Evento::SEPARADOR, $evento);
-            $eventos[$tipo][] = $nombre;
+            $eventos[$evento->getTipo()][] = $evento->getNombre();
         }
 
         return $eventos;

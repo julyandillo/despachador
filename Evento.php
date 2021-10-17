@@ -16,13 +16,19 @@ class Evento
 
     private array $parametros;
 
+    private array $parametrosObligatorios;
+
+    private array $suscriptores;
+
     public function __construct(string $evento)
     {
         list($this->tipo, $this->nombre) = explode(self::SEPARADOR, $evento);
         $this->parametros = [];
+        $this->parametrosObligatorios = [];
         $this->lanzador = '';
         $this->linea = 0;
         $this->timestamp = date('d-m-Y H:i:s');
+        $this->suscriptores = [];
     }
 
     public function __toString(): string
@@ -101,6 +107,28 @@ class Evento
     public function setLinea(int $linea): self
     {
         $this->linea = $linea;
+        return $this;
+    }
+
+    public function getParametrosObligatorios(): array
+    {
+        return $this->parametrosObligatorios;
+    }
+
+    public function setParametrosObligatorios(array $parametrosObligatorios): self
+    {
+        $this->parametrosObligatorios = $parametrosObligatorios;
+        return $this;
+    }
+
+    public function getSuscriptores(): array
+    {
+        return $this->suscriptores;
+    }
+
+    public function setSuscriptores(array $suscriptores): self
+    {
+        $this->suscriptores = $suscriptores;
         return $this;
     }
 

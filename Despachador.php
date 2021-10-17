@@ -7,7 +7,7 @@ class Despachador
 {
     private static ?Despachador $instancia = null;
 
-    public AlmacenEventos $almacenEventos;
+    private AlmacenEventos $almacenEventos;
 
     private function __construct()
     {
@@ -20,19 +20,24 @@ class Despachador
             self::$instancia = new self();
         }
 
-        if (!self::$instancia->almacenEventos->eventoDisponible($eventoParalanzar)) {
-            echo "ERROR: El evento '{$eventoParalanzar}' no es válido o no está entre los disponibles";
-            return null;
+        if (!Evento::esValido($eventoParalanzar)) {
+            echo "ERROR: el evento '{$eventoParalanzar}' no es válido";
+            return;
         }
 
-        $evento = new Evento($eventoParalanzar);
+        $evento = self::$instancia->almacenEventos->getEvento($eventoParalanzar);
+        if (!$evento) {
+            echo "ERROR: El evento '{$eventoParalanzar}' no está entre los disponibles";
+            return;
+        }
+
         $evento
             ->setParametros($parametros)
             // obtiene el archivo desde el cual se lanza el evento
             ->setLanzador(debug_backtrace()[0]['file'])
             ->setLinea(debug_backtrace()[0]['line']);
 
-        foreach (self::$instancia->almacenEventos->getArraySuscriptoresDelEvento($eventoParalanzar) as $suscriptor) {
+        foreach ($evento->getSuscriptores() as $suscriptor) {
             if (!($instanciaDelSuscriptor = Suscriptor::getInstanciaPorNombre($suscriptor, $evento->getTipo()))) {
                 continue;
             }
