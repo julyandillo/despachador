@@ -1,12 +1,14 @@
 <?php
 
+include_once 'RegistroEventos/RegistroEventosFactory.php';
+
 abstract class Suscriptor
 {
     const PATH_SUSCRIPTORES = 'suscriptores';
 
     private string $nombre_clase;  // para poder saber de que clase hija se esta ejecutando
 
-    public static function getInstanciaPorNombre(string $nombreSuscriptor, string $tipoEvento): ?self
+    public static function getInstanciaPorNombre(string $nombreSuscriptor, string $tipoEvento): ?object
     {
         if (!file_exists(self::PATH_SUSCRIPTORES . '/' . $tipoEvento . '/' . $nombreSuscriptor . '.php')) {
             echo "ERROR: No se encuentra la clase del suscriptor en la ruta adecuada<br />";
@@ -49,12 +51,13 @@ abstract class Suscriptor
     private function guardaRegistroDeEventos(Evento $evento)
     {
         //file_put_contents(__DIR__ . '/registro_eventos.log', $this->evento . PHP_EOL, FILE_APPEND);
-        $ahora = date('d-m-Y H:i:s');
-        echo "<br />-----------------------<br />";
-        echo "Suscriptor: " . $this->nombre_clase . ", evento capturado {$evento}, {$ahora}<br />";
-        echo "Fecha y hora del evento: {$evento->getTimestamp()}<br />";
-        echo "Lanzado desde: {$evento->getLanzador()}, linea {$evento->getLinea()}<br />";
-        echo "-----------------------<br />";
+        $registroEventos = RegistroEventosFactory::obtieneRegistroEventos();
+        $registroEventos->registraEventoCapturado($evento, $this->nombre_clase);
+    }
+
+    public function __toString(): string
+    {
+        return $this->nombre_clase;
     }
 
     protected abstract function eventoLanzado(Evento $evento);
