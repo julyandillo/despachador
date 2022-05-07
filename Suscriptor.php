@@ -4,9 +4,7 @@ abstract class Suscriptor
 {
     const PATH_SUSCRIPTORES = 'suscriptores';
 
-    private Evento $evento;
-
-    protected string $nombre_clase;  // para poder saber de que clase hija se esta ejecutando
+    private string $nombre_clase;  // para poder saber de que clase hija se esta ejecutando
 
     public static function getInstanciaPorNombre(string $nombreSuscriptor, string $tipoEvento): ?self
     {
@@ -20,20 +18,21 @@ abstract class Suscriptor
         try {
             $reflector = new ReflectionClass($nombreSuscriptor);
 
+            if (!$reflector->isSubclassOf('Suscriptor')) {
+                echo "ERROR: El suscriptor '{$nombreSuscriptor}' no es una subclase de la clase Suscriptor<br />";
+                return null;
+            }
+
+            $suscriptor = $reflector->newInstance();
+            $suscriptor->estableceNombreClaseSuscriptor($reflector->getName());
+
+            return $suscriptor;
+
         } catch (ReflectionException $ex) {
             echo "ERROR: No se ha podido instanciar el suscriptor<br />" . $ex->getMessage();
             return null;
         }
 
-        if (!$reflector->isSubclassOf('Suscriptor')) {
-            echo "ERROR: El suscriptor '{$nombreSuscriptor}' no es una subclase de la clase Suscriptor<br />";
-            return null;
-        }
-
-        $suscriptor = $reflector->newInstance();
-        $suscriptor->estableceNombreClaseSuscriptor($reflector->getName());
-
-        return $suscriptor;
     }
 
     private function estableceNombreClaseSuscriptor(string $clase)
@@ -43,22 +42,20 @@ abstract class Suscriptor
 
     public function notificaEvento(Evento $evento)
     {
-        $this->evento = $evento;
-        $this->guardaRegistroEventos();
-
-        $this->lanzaEvento($evento);
+        $this->guardaRegistroDeEventos($evento);
+        $this->eventoLanzado($evento);
     }
 
-    private function guardaRegistroEventos()
+    private function guardaRegistroDeEventos(Evento $evento)
     {
         //file_put_contents(__DIR__ . '/registro_eventos.log', $this->evento . PHP_EOL, FILE_APPEND);
         $ahora = date('d-m-Y H:i:s');
         echo "<br />-----------------------<br />";
-        echo "Suscriptor: " . $this->nombre_clase . ", evento capturado {$this->evento}, {$ahora}<br />";
-        echo "Fecha y hora del evento: {$this->evento->getTimestamp()}<br />";
-        echo "Lanzado desde: {$this->evento->getLanzador()}, linea {$this->evento->getLinea()}<br />";
+        echo "Suscriptor: " . $this->nombre_clase . ", evento capturado {$evento}, {$ahora}<br />";
+        echo "Fecha y hora del evento: {$evento->getTimestamp()}<br />";
+        echo "Lanzado desde: {$evento->getLanzador()}, linea {$evento->getLinea()}<br />";
         echo "-----------------------<br />";
     }
 
-    protected abstract function lanzaEvento(Evento $evento);
+    protected abstract function eventoLanzado(Evento $evento);
 }
