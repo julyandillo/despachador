@@ -30,7 +30,15 @@ abstract class Suscriptor
             return null;
         }
 
-        return $reflector->newInstance();
+        $suscriptor = $reflector->newInstance();
+        $suscriptor->estableceNombreClaseSuscriptor($reflector->getName());
+
+        return $suscriptor;
+    }
+
+    private function estableceNombreClaseSuscriptor(string $clase)
+    {
+        $this->nombre_clase = $clase;
     }
 
     public function notificaEvento(Evento $evento)
@@ -40,6 +48,7 @@ abstract class Suscriptor
 
         $this->lanzaEvento($evento);
     }
+
     private function guardaRegistroEventos()
     {
         //file_put_contents(__DIR__ . '/registro_eventos.log', $this->evento . PHP_EOL, FILE_APPEND);
